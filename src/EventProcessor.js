@@ -29,21 +29,6 @@ export default function EventProcessor(
   let exceededCapacity = false;
   let flushTimer;
 
-  function shouldSampleEvent() {
-    return samplingInterval === 0 || Math.floor(Math.random() * samplingInterval) === 0;
-  }
-
-  function shouldDebugEvent(e) {
-    if (e.debugEventsUntilDate) {
-      // The "last known past time" comes from the last HTTP response we got from the server.
-      // In case the client's time is set wrong, at least we know that any expiration date
-      // earlier than that point is definitely in the past.  If there's any discrepancy, we
-      // want to err on the side of cutting off event debugging sooner.
-      return e.debugEventsUntilDate > lastKnownPastTime && e.debugEventsUntilDate > new Date().getTime();
-    }
-    return false;
-  }
-
   function addToOutbox(event) {
     if (queue.length < eventCapacity) {
       queue.push(event);

@@ -1,7 +1,7 @@
 {
   "name": "unlaunch-js-sdk-common",
-  "version": "1.0.0",
-  "description": "Unlaunch SDK for JavaScript - common code",
+  "version": "0.0.1",
+  "description": "Unlaunch JavaScript SDK- common code",
   "author": "Unlaunch <unlaunch@gmail.com>",
   "license": "Apache-2.0",
   "files": [
