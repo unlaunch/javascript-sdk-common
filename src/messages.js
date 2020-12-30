@@ -52,7 +52,7 @@ export const unknownCustomEventKey = function(key) {
 };
 
 export const environmentNotFound = function() {
-  return 'Environment not found. Double check that you specified a valid environment/client-side ID.' + docLink;
+  return 'client-sdkkey not found. Double check that you specified a valid client sdk Key.' + docLink;
 };
 
 export const environmentNotSpecified = function() {

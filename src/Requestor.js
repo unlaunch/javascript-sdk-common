@@ -14,7 +14,7 @@ function getResponseError(result) {
 }
 
 export default function Requestor(platform, options, environment) {
-  const baseUrl = options.baseUrl;
+  const baseUrl = options.host;
   const useReport = options.useReport;
   const withReasons = options.evaluationReasons;
   const logger = options.logger;

@@ -121,7 +121,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
       createdTime: now.getTime(),
       type: 'IMPRESSION',
       sdk: 'Javascript',
-      sdkVersion: '1.0.0',
+      sdkVersion: platform.version,
       flagKey: key,
       userId: user.identity,
       //value: value,
@@ -165,7 +165,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     let detail;
     let defaultValue = 'control';
     if(offline){
-      detail = { value: defaultValue, variationIndex: null, reason: 'DEFAULT_VALUE_SERVED'};
+      detail = { value: defaultValue, reason: 'DEFAULT_VALUE_SERVED'};
       return detail;
     }
     
@@ -184,8 +184,10 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
       
     } else {
       
-       logger.error("flag is not initialized. Please add flag key in initialize", key);
-       return;
+      detail = { value: defaultValue, reason: 'Flag not exist. control is returned'};
+      
+      logger.error(`Flag not found with flag key ${key}. Either flag is not initialized or there is error in loading flag`);
+      return detail;
       
     }
   }
@@ -194,40 +196,38 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     return {
       value: flag.result,
       status: flag.status,
-      variationIndex: flag.variation === undefined ? null : flag.variation,
-      reason: flag.evaluationReason || null,
+     // variationIndex: flag.variation === undefined ? null : flag.variation,
+      reason: flag.evaluationReason || '',
     };
     // Note, the logic above ensures that variationIndex and reason will always be null rather than
     // undefined if we don't have values for them. That's just to avoid subtle errors that depend on
     // whether an object was JSON-encoded with null properties omitted or not.
   }
 
-  function variantConfig(flagKey, variationKey, variantConfig = {}) {
-    if (!inited) {
-        logger.error('client not initialized');
-        return undefined;
-    } else if(offline){
-      console.log('default variantConfig returned in offline mode');
-      return variantConfig;
+  function variationConfiguration(flagKey, variationKey, variantConfig = {}) {
+   
+    if(offline){
+      console.log('No variation configuration available in offline mode');
+      return {};
     } else if (!flagKey || flagKey.length === 0) {
-        logger.error('flag key is missing');
-        return undefined;
+        logger.error('flag key is missing. No variation configuration available');
+        return {};
     } else if (!variationKey || variationKey.length === 0) {
-        logger.error('variation key is missing');
-        return undefined;
+        logger.error('variation key is missing. No variation configuration available');
+        return {};
     }
 
     let flag = flags[flagKey];
     
     if (flag === undefined) {
-        logger.error('flag not found. call variation to load flag from server');
-        return undefined;
+        logger.error('Flag not found. No variation configuration available');
+        return {};
     } else { 
         let variation = flag.result === variationKey;
         
         if (!variation) {
-            logger.error(`Variation key ${variationKey} not found!`);
-            return undefined;
+            logger.error(`Variation key ${variationKey} not found!. No variation configuration available`);
+            return {};
         }
         
         return flag.variantConfig
@@ -464,7 +464,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     getUser: getUser,
     variation: variation,
     variationDetail: variationDetail,
-    variantConfig: variantConfig,
+    variationConfiguration: variationConfiguration,
     on: on,
     off: off,
     flush: flush,
