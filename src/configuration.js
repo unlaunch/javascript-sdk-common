@@ -12,7 +12,7 @@ import * as utils from './utils';
 //
 // The extraOptionDefs parameter to validate() uses the same format.
 export const baseOptionDefs = {
-  host: { default: 'https://api-qa.unlaunch.io/api/v1' },
+  host: { default: 'https://api.unlaunch.io/api/v1' },
   eventsUrl: { default: 'https://api-qa.unlaunch.io/api/v1' },
   offline: {default: false},
   sendEvents: { default: true },
