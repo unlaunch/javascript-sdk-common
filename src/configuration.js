@@ -17,7 +17,7 @@ export const baseOptionDefs = {
   offline: {default: false},
   sendEvents: { default: true },
   sendULHeaders: { default: true },
-  requestTimeoutInMillis:{ default: 3000},
+  requestTimeoutInMillis:{ default: 2000},
   inlineUsersInEvents: { default: false },
   allowFrequentDuplicateEvents: { default: false },
   sendEventsOnlyForVariation: { default: false },
