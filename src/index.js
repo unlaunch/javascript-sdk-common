@@ -204,7 +204,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     // whether an object was JSON-encoded with null properties omitted or not.
   }
 
-  function variationConfiguration(flagKey, variationKey, variantConfig = {}) {
+  function variationConfiguration(flagKey, variantConfig = {}) {
    
     if(offline){
       console.log('No variation configuration available in offline mode');
@@ -212,10 +212,11 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     } else if (!flagKey || flagKey.length === 0) {
         logger.error('flag key is missing. No variation configuration available');
         return {};
-    } else if (!variationKey || variationKey.length === 0) {
-        logger.error('variation key is missing. No variation configuration available');
-        return {};
-    }
+    } 
+    // else if (!variationKey || variationKey.length === 0) {
+    //     logger.error('variation key is missing. No variation configuration available');
+    //     return {};
+    // }
 
     let flag = flags[flagKey];
     
@@ -223,7 +224,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
         logger.error('Flag not found. No variation configuration available');
         return {};
     } else { 
-        let variation = flag.result === variationKey;
+        let variation = flag.result;
         
         if (!variation) {
             logger.error(`Variation key ${variationKey} not found!. No variation configuration available`);

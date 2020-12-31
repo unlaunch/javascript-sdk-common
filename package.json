@@ -1,6 +1,6 @@
 {
   "name": "unlaunch-js-client-common",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Unlaunch JavaScript client- common code",
   "author": "Unlaunch <unlaunch@gmail.com>",
   "license": "Apache-2.0",
