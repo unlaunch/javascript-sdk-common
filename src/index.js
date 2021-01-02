@@ -186,7 +186,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
       
       detail = { value: defaultValue, reason: 'Flag not exist. control is returned'};
       
-      logger.error(`Flag not found with flag key ${key}. Either flag is not initialized or there is error in loading flag`);
+      logger.error(`Flag '${key}' not found. Either the flag is not created or it is not enabled for client-side access. To enable client-side access, open the flag in the Unlaunch Console. Then click on 'Settings' tab and make sure the 'Make this flag available to client-side SDKs' option is selected.`);
       return detail;
       
     }

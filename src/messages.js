@@ -14,8 +14,9 @@ export const clientInitialized = function() {
   return 'Unlaunch client initialized';
 };
 
-const docLink =
-  ' Please see https://docs.unlaunch.io/docs/sdks/ for instructions on SDK initialization.';
+const invalidSdkKeyHelpMsg = `To obtain the SDK key for your project, please sign in to the Unlaunch Console at https://app.unlaunch.io  Then on the right sidebar, click on 'Settings'. From the 'Projects' tab, Copy the 'Browser / Public Key' for the environment you want to connect with, and provide it to this SDK. For more information, see this: https://docs.unlaunch.io/docs/sdks/sdk-keys`;
+
+const docLink = "Read more at https://docs.unlaunch.io/docs/sdks/javascript-library"
 
 export const clientNotReady = function() {
   return 'Unlaunch client is not ready';
@@ -26,7 +27,7 @@ export const eventCapacityExceeded = function() {
 };
 
 export const eventWithoutUser = function() {
-  return 'See docs at https://docs.unlaunch.io/docs/sdks/';
+  return 'Read more at https://docs.unlaunch.io/docs/sdks/javascript-library';
 };
 
 export const invalidContentType = function(contentType) {
@@ -52,11 +53,11 @@ export const unknownCustomEventKey = function(key) {
 };
 
 export const environmentNotFound = function() {
-  return 'client-sdkkey not found. Double check that you specified a valid client sdk Key.' + docLink;
+  return 'The SDK Key was incorrect or invalid. ' + invalidSdkKeyHelpMsg;
 };
 
 export const environmentNotSpecified = function() {
-  return 'No environment/client-side ID was specified.' + docLink;
+  return 'You must provide a valid SDK Key. ' + invalidSdkKeyHelpMsg;
 };
 
 export const errorFetchingFlags = function(err) {
@@ -64,7 +65,7 @@ export const errorFetchingFlags = function(err) {
 };
 
 export const userNotSpecified = function() {
-  return 'No user specified.' + docLink;
+  return 'You must pass in a value or identity or set it to annoymous.' + docLink;
 };
 
 export const invalidUser = function() {
@@ -82,7 +83,7 @@ export const httpErrorMessage = function(status, context, retryMessage) {
   return (
     'Received error ' +
     status +
-    (status === 401 ? ' (invalid SDK key)' : '') +
+    (status === 401 ? ' (invalid SDK key) ' : '') +
     ' for ' +
     context +
     ' - ' +
