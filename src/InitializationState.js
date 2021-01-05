@@ -65,6 +65,7 @@ function InitializationStateTracker(eventEmitter) {
         succeeded = true;
         eventEmitter.emit(successEvent);
         eventEmitter.emit(readyEvent);
+        console.log(readyEvent + " event emitted");
       }
     },
 
@@ -74,6 +75,7 @@ function InitializationStateTracker(eventEmitter) {
         failureValue = err;
         eventEmitter.emit(failureEvent, err);
         eventEmitter.emit(readyEvent);
+        console.log(readyEvent + " event emitted");
       }
       eventEmitter.maybeReportError(err); // the "error" event can be emitted more than once, unlike the others
     },

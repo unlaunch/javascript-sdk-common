@@ -276,7 +276,12 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
   }
 
   function on(event, handler, context) {
-    if (isChangeEventKey(event)) {
+    if(event == 'ready'){
+      initializationStateTracker.getReadyPromise().
+      then(() => { 
+          handler();
+    });
+    }else if (isChangeEventKey(event)) {
       subscribedToChangeEvents = true;
       emitter.on(event, handler, context);
     } else {
