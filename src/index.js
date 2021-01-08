@@ -44,7 +44,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
 
   const seenRequests = {};
   let flags = {};
-  let useLocalStorage;
+  let useLocalStorage = false;
   let subscribedToChangeEvents;
   let inited = false;
   let closed = false;
@@ -107,16 +107,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     const user = ident.getUser();
     const now = new Date();
     const value = detail ? detail.value : null;
-    // if (!options.allowFrequentDuplicateEvents) {
-    //   const cacheKey = JSON.stringify(value) + (user && user.key ? user.key : '') + key; // see below
-    //   const cached = seenRequests[cacheKey];
-    //   // cache TTL is five minutes
-    //   if (cached && now - cached < 300000) {
-    //     return;
-    //   }
-    //   seenRequests[cacheKey] = now;
-    // }
-
+  
     const event = {
       createdTime: now.getTime(),
       type: 'IMPRESSION',
@@ -132,16 +123,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
       machineName: 'N/A'
       
     };
-    // const flag = flags[key];
-    // if (flag) {
-    //   event.version = flag.flagVersion ? flag.flagVersion : flag.version;
-    //   event.trackEvents = flag.trackEvents;
-    //   event.debugEventsUntilDate = flag.debugEventsUntilDate;
-    // }
-    // if ((includeReason || (flag && flag.trackReason)) && detail) {
-    //   event.reason = detail.reason;
-    // }
-
+   
     enqueueEvent(event);
   }
   
@@ -308,18 +290,12 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     return event === changeEvent || event.substr(0, changeEvent.length + 1) === changeEvent + ':';
   }
 
-  if (typeof options.bootstrap === 'string' && options.bootstrap.toUpperCase() === 'LOCALSTORAGE') {
+  if (options.localStorage === true) {
     if (store) {
       useLocalStorage = true;
     } else {
       logger.warn(messages.localStorageUnavailable());
     }
-  }
-
-  if (typeof options.bootstrap === 'object') {
-    // Set the flags as soon as possible before we get into any async code, so application code can read
-    // them even if the ready event has not yet fired.
-    flags = readFlagsFromBootstrap(options.bootstrap);
   }
 
   if (stateProvider) {
@@ -343,6 +319,13 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
       return Promise.reject(new errors.ULInvalidEnvironmentIdError(messages.environmentNotSpecified()));
     }
     return userValidator.validateUser(user).then(realUser => {
+         
+      if (useLocalStorage == true && environment.startsWith("prod") == false) {
+          console.warn("[UL] Using local storage to store results of flag evaluations. You may have to refresh twice to see the latest result. We recommend setting localStorage = false in options on non-production environments.")
+      } else if (useLocalStorage == false && environment.startsWith("prod") == true) {
+          console.warn("[UL] Disabling local storage in production is not recommended. Please enable it. For more information see: https://docs.unlaunch.io/docs/sdks/javascript-library#client-configuration")
+      }
+
       ident.setUser(realUser);
       if (useLocalStorage) {
         console.log("finishInitWithLocalStorage");

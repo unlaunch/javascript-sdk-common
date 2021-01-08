@@ -22,11 +22,11 @@ export const baseOptionDefs = {
   allowFrequentDuplicateEvents: { default: false },
   sendEventsOnlyForVariation: { default: false },
   useReport: { default: false },
-  evaluationReason: { default: false },
+  evaluationReason: { default: true },
   eventCapacity: { default: 100, minimum: 1 },
   flushInterval: { default: 2000, minimum: 2000 },
   samplingInterval: { default: 0, minimum: 0 },
-  bootstrap: { type: 'string|object' },
+  localStorage: { default: true },
   wrapperName: { type: 'string' },
   wrapperVersion: { type: 'string' },
   stateProvider: { type: 'object' }, // not a public option, used internally
