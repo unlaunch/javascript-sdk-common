@@ -8,7 +8,8 @@ import * as utils from './utils';
 // - remove(key): Removes the given key
 export default function Store(localStorageProvider, environment, hash, ident, logger) {
   const store = {};
-
+  const ulUserIdKey = 'ul:$anonUserId';
+ 
   function getFlagsKey() {
     let key = '';
     const user = ident.getUser();
@@ -50,8 +51,22 @@ export default function Store(localStorageProvider, environment, hash, ident, lo
   // Returns a Promise which will be resolved with no value if successful, or rejected if storage
   // was not available.
   store.saveFlags = flags => {
-  //  const data = utils.extend({}, flags, { $schema: 1 });
     const data = flags;
+   
+    let lsKeys = []; 
+    
+    for (let i = 0; i < localStorage.length; i++){
+        let localStorageKey = localStorage.key(i);
+        if (localStorageKey.startsWith('ul:') && localStorageKey != ulUserIdKey) {
+            lsKeys.push(localStorageKey);
+        }
+    }
+
+    // Iterate over arr and remove the items by key
+    for (let x = 0; x < lsKeys.length; x++) {
+        localStorage.removeItem(lsKeys[x]);
+    }
+
     return localStorageProvider.set(getFlagsKey(), JSON.stringify(data)).catch(err => {
       logger.warn(messages.localStorageUnavailable());
       return Promise.reject(err);
