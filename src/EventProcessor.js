@@ -76,12 +76,12 @@ export default function EventProcessor(
     logger.debug(messages.debugPostingEvents(eventsToSend.length));
     return eventSender.sendEvents(eventsToSend, impressionEventsUrl).then(responseInfo => {
       if (responseInfo) {
-        if (responseInfo.serverTime) {
-          lastKnownPastTime = responseInfo.serverTime;
-        }
-        if (!errors.isHttpErrorRecoverable(responseInfo.status)) {
-          disabled = true;
-        }
+        // if (responseInfo.serverTime) {
+        //   lastKnownPastTime = responseInfo.serverTime;
+        // }
+        // if (!errors.isHttpErrorRecoverable(responseInfo.status)) {
+        //   disabled = true;
+        // }
         if (responseInfo.status >= 400) {
           utils.onNextTick(() => {
             emitter.maybeReportError(
@@ -111,12 +111,12 @@ export default function EventProcessor(
     logger.debug(messages.debugPostingEvents(variationCountEvents.length));
     return eventSender.sendEvents(variationCountEvents, varCountEventsUrl).then(responseInfo => {
       if (responseInfo) {
-        if (responseInfo.serverTime) {
-          lastKnownPastTime = responseInfo.serverTime;
-        }
-        if (!errors.isHttpErrorRecoverable(responseInfo.status)) {
-          disabled = true;
-        }
+        // if (responseInfo.serverTime) {
+        //   lastKnownPastTime = responseInfo.serverTime;
+        // }
+        // if (!errors.isHttpErrorRecoverable(responseInfo.status)) {
+        //   disabled = true;
+        // }
         if (responseInfo.status >= 400) {
           utils.onNextTick(() => {
             emitter.maybeReportError(

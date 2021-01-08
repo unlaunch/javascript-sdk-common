@@ -39,7 +39,8 @@ export default function EventSender(platform, environmentId, options) {
           if (result.status >= 400 && errors.isHttpErrorRecoverable(result.status) && canRetry) {
             return doPostRequest(false);
           } else {
-            return getResponseInfo(result);
+            //return getResponseInfo(result);
+            return result;
           }
         })
         .catch(() => {
