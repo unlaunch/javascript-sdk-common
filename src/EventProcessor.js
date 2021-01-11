@@ -83,6 +83,7 @@ export default function EventProcessor(
         //   disabled = true;
         // }
         if (responseInfo.status >= 400) {
+          logger.error("Error in sending impression events to server. Error code: " + responseInfo.status);
           utils.onNextTick(() => {
             emitter.maybeReportError(
               new errors.ULUnexpectedResponseError(
@@ -118,6 +119,7 @@ export default function EventProcessor(
         //   disabled = true;
         // }
         if (responseInfo.status >= 400) {
+          logger.error("Error in sending variation count events to server. Error code: " + responseInfo.status);
           utils.onNextTick(() => {
             emitter.maybeReportError(
               new errors.ULUnexpectedResponseError(

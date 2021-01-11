@@ -38,6 +38,7 @@ export default function Requestor(platform, options, environment) {
     
     if (body) {
       headers['Content-Type'] = jsonContentType;
+      headers['X-Api-Key'] = environment;
     }
 
     let coalescer = activeRequests[endpoint];
@@ -48,7 +49,6 @@ export default function Requestor(platform, options, environment) {
       });
       activeRequests[endpoint] = coalescer;
     }
-    console.log("Calling endpoint " , endpoint + " body " + body);
     const req = platform.httpRequest(method, endpoint, headers, body);
     const p = req.promise.then(
       result => {
@@ -58,7 +58,6 @@ export default function Requestor(platform, options, environment) {
             result.header('content-type') &&
             result.header('content-type').substring(0, jsonContentType.length) === jsonContentType
           ) {
-            console.log("Result recieved" , result.body);
             return JSON.parse(result.body);
           } else {
             const message = messages.invalidContentType(result.header('content-type') || '');
@@ -84,8 +83,8 @@ export default function Requestor(platform, options, environment) {
   };
 
   requestor.fetchFlagsWithResult = function(user, flagKeys) {
-    console.log("evaluate", user, flagKeys);
-    let endpoint = [baseUrl, '/evaluate/', environment].join('') + '?evaluationReason=' + options.evaluationReason;
+    
+    let endpoint = [baseUrl, '/evaluate'].join('') + '?evaluationReason=' + options.evaluationReason;
     
     let body = getRequestBody(flagKeys, user);
     
