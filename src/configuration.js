@@ -27,6 +27,7 @@ export const baseOptionDefs = {
   flushInterval: { default: 2000, minimum: 2000 },
   samplingInterval: { default: 0, minimum: 0 },
   localStorage: { default: true },
+  logLevel: { default: 'error' },
   wrapperName: { type: 'string' },
   wrapperVersion: { type: 'string' },
   stateProvider: { type: 'object' }, // not a public option, used internally

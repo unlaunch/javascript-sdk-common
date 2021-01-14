@@ -25,7 +25,14 @@ const internalChangeEvent = 'internal-change';
 // For definitions of the API in the platform object, see stubPlatform.js in the test code.
 
 export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platform, extraOptionDefs) {
-  const logger = createLogger();
+  
+  let logLevel = configuration.baseOptionDefs['logLevel'].default;
+  
+  if(specifiedOptions.logLevel || specifiedOptions.logLevel == ''){
+    logLevel =  specifiedOptions.logLevel;
+  }
+  
+  const logger = createLogger(logLevel);
   const emitter = EventEmitter(logger);
   const initializationStateTracker = InitializationStateTracker(emitter);
   const options = configuration.validate(specifiedOptions, emitter, extraOptionDefs, logger);
@@ -70,11 +77,11 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     store = new Store(platform.localStorage, environment, hash, ident, logger);
   }
 
-  function createLogger() {
+  function createLogger(logLevel) {
     if (specifiedOptions && specifiedOptions.logger) {
       return specifiedOptions.logger;
     }
-    return (extraOptionDefs && extraOptionDefs.logger && extraOptionDefs.logger.default) || createConsoleLogger('warn');
+    return (extraOptionDefs && extraOptionDefs.logger && extraOptionDefs.logger.default) || createConsoleLogger(logLevel);
   }
 
   function shouldEnqueueEvent() {
