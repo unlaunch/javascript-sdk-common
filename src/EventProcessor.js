@@ -26,6 +26,7 @@ export default function EventProcessor(
   let queue = [];
   let lastKnownPastTime = 0;
   let disabled = false;
+  let enabledLiveTail = false;
   let exceededCapacity = false;
   let flushTimer;
 
@@ -57,7 +58,10 @@ export default function EventProcessor(
       variationCountProcessor.incrementVariationCount(event);
 
       // added in queue for livetail
-      addToOutbox(event);
+      if (enabledLiveTail) {
+        addToOutbox(event);
+      }
+
       return;
     }
 
