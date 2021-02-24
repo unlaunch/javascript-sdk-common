@@ -30,14 +30,7 @@ export default function Store(localStorageProvider, environment, hash, ident, lo
         }
         try {
           let data = JSON.parse(dataStr);
-          // if (data) {
-          //   const schema = data.$schema;
-          //   if (schema === undefined || schema < 1) {
-          //     data = utils.transformValuesToVersionedValues(data);
-          //   } else {
-          //     delete data['$schema'];
-          //   }
-          // }
+
           return data;
         } catch (ex) {
           return store.clearFlags().then(() => Promise.reject(ex));

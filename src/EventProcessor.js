@@ -14,17 +14,13 @@ export default function EventProcessor(
 ) {
   const processor = {};
   const eventSender = sender || EventSender(platform, environmentId, options);
-  //const mainEventsUrl = options.eventsUrl + '/events/bulk/' + environmentId;
   const impressionEventsUrl = options.eventsUrl + '/impressions'
   const varCountEventsUrl = options.eventsUrl + '/events'
   const variationCountProcessor = VariationCountProcessor();
-  const inlineUsers = options.inlineUsersInEvents;
-  const samplingInterval = options.samplingInterval;
   const eventCapacity = options.eventCapacity;
   const flushInterval = options.flushInterval;
   const logger = options.logger;
   let queue = [];
-  let lastKnownPastTime = 0;
   let disabled = false;
   let enabledLiveTail = false;
   let exceededCapacity = false;
@@ -50,9 +46,6 @@ export default function EventProcessor(
     if (disabled) {
       return;
     }
-    let addFullEvent = false;
-    let addDebugEvent = false;
-
     if (event.type === 'IMPRESSION'){
       // aggregate variation counts
       variationCountProcessor.incrementVariationCount(event);
@@ -80,12 +73,6 @@ export default function EventProcessor(
     logger.debug(messages.debugPostingEvents(eventsToSend.length));
     return eventSender.sendEvents(eventsToSend, impressionEventsUrl).then(responseInfo => {
       if (responseInfo) {
-        // if (responseInfo.serverTime) {
-        //   lastKnownPastTime = responseInfo.serverTime;
-        // }
-        // if (!errors.isHttpErrorRecoverable(responseInfo.status)) {
-        //   disabled = true;
-        // }
         if (responseInfo.status >= 400) {
           logger.error("Error in sending impression events to server. Error code: " + responseInfo.status);
           utils.onNextTick(() => {
@@ -116,12 +103,6 @@ export default function EventProcessor(
     logger.debug(messages.debugPostingEvents(variationCountEvents.length));
     return eventSender.sendEvents(variationCountEvents, varCountEventsUrl).then(responseInfo => {
       if (responseInfo) {
-        // if (responseInfo.serverTime) {
-        //   lastKnownPastTime = responseInfo.serverTime;
-        // }
-        // if (!errors.isHttpErrorRecoverable(responseInfo.status)) {
-        //   disabled = true;
-        // }
         if (responseInfo.status >= 400) {
           logger.error("Error in sending variation count events to server. Error code: " + responseInfo.status);
           utils.onNextTick(() => {
