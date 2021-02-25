@@ -48,12 +48,10 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     EventProcessor(platform, options, environment, null, emitter, eventSender);
 
   const requestor = Requestor(platform, options, environment);
-
-  const seenRequests = {};
   let flags = {};
   let useLocalStorage = false;
   let subscribedToChangeEvents;
-  let inited = false;
+  let initialized = false;
   let closed = false;
   let firstEvent = true;
 
@@ -68,8 +66,6 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
   // - enqueueEvent(event) accepts an analytics event object and returns true if the stateProvider will
   //   be responsible for delivering it, or false if we still should deliver it ourselves.
   const stateProvider = options.stateProvider;
-
-  //const ident = Identity(null, sendIdentifyEvent);
   const ident = Identity(null, null);
   const userValidator = UserValidator(platform.localStorage, logger);
   let store;
@@ -105,7 +101,6 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     }
     firstEvent = false;
     if (shouldEnqueueEvent()) {
-      //logger.debug(messages.debugEnqueueingEvent(event.kind));
         events.enqueue(event);
     }
   }
@@ -122,7 +117,6 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
       sdkVersion: platform.version,
       flagKey: key,
       userId: user.identity,
-      //value: value,
       variationKey: value,
       flagStatus: detail.status,
       evaluationReason: detail.reason,
@@ -185,7 +179,6 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     return {
       value: flag.result,
       status: flag.status,
-     // variationIndex: flag.variation === undefined ? null : flag.variation,
       reason: flag.evaluationReason || '',
     };
     // Note, the logic above ensures that variationIndex and reason will always be null rather than
@@ -201,22 +194,16 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
     } else if (!flagKey || flagKey.length === 0) {
         logger.error('flag key is missing. No variation configuration available');
         return {};
-    } 
-    // else if (!variationKey || variationKey.length === 0) {
-    //     logger.error('variation key is missing. No variation configuration available');
-    //     return {};
-    // }
+    }
 
     let flag = flags[flagKey];
-    
     if (flag === undefined) {
         logger.error('Flag not found. No variation configuration available');
         return {};
     } else { 
         let variation = flag.result;
-        
         if (!variation) {
-            logger.error(`Variation key ${variationKey} not found!. No variation configuration available`);
+            logger.error(`No variation configuration available`);
             return {};
         }
         
@@ -341,7 +328,6 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
         flags = {}
         return signalSuccessfulInit();
      } else {
-       // return finishInitWithPolling();
        console.log("finishInitWithFlagsResult");
        return finishInitWithFlagsResult(flagKeys);
       }
@@ -370,7 +356,6 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
           flags = storedFlags;
           utils.onNextTick(signalSuccessfulInit);
           return requestor
-             //.fetchFlagSettings(ident.getUser(), hash)
             .fetchFlagsWithResult(ident.getUser(),flagKeys)
             .then(result => replaceAllFlags(result.data.flags))
             .catch(err => emitter.maybeReportError(err));
@@ -415,7 +400,7 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
 
   function signalSuccessfulInit() {
     logger.info(messages.clientInitialized());
-    inited = true;
+    initialized = true;
     initializationStateTracker.signalSuccess();
   }
 

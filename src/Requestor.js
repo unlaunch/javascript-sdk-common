@@ -1,4 +1,3 @@
-import * as utils from './utils';
 import * as errors from './errors';
 import * as messages from './messages';
 import promiseCoalescer from './promiseCoalescer';
@@ -15,10 +14,6 @@ function getResponseError(result) {
 
 export default function Requestor(platform, options, environment) {
   const baseUrl = options.host;
-  const useReport = options.useReport;
-  const withReasons = options.evaluationReasons;
-  const logger = options.logger;
-
   const requestor = {};
 
   const activeRequests = {}; // map of URLs to promiseCoalescers
@@ -31,9 +26,7 @@ export default function Requestor(platform, options, environment) {
       });
     }
 
-  //  const method = body ? 'REPORT' : 'GET';
     const method = body ? 'POST' : 'GET';
-  //  const headers = utils.getULHeaders(platform, options);
     const headers = {}
     
     if (body) {
@@ -63,7 +56,19 @@ export default function Requestor(platform, options, environment) {
             const message = messages.invalidContentType(result.header('content-type') || '');
             return Promise.reject(new errors.ULFlagFetchError(message));
           }
-        } else {
+        }
+        else if (result.status === 400) {
+          if (
+              result.header('content-type') &&
+              result.header('content-type').substring(0, jsonContentType.length) === jsonContentType
+          ) {
+            return Promise.reject(new errors.ULInvalidArgumentError(result.body));
+          } else {
+            const message = messages.invalidContentType(result.header('content-type') || '');
+            return Promise.reject(new errors.ULFlagFetchError(message));
+          }
+        }
+        else {
           return Promise.reject(getResponseError(result));
         }
       },
@@ -105,9 +110,7 @@ export default function Requestor(platform, options, environment) {
 
     let attributes = user.attributes;
     for (const attr in attributes) {
-       // if (attr != "id") {
-            requestUser.attributes[attr] = attributes[attr];
-       // }
+        requestUser.attributes[attr] = attributes[attr];
     }
   
     return requestUser;
@@ -115,8 +118,8 @@ export default function Requestor(platform, options, environment) {
 
   function _getUUIDv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
+      const r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
     });
   }
 

@@ -36,18 +36,10 @@ export default function EventSender(platform, environmentId, options) {
             // This was a response from a fire-and-forget request, so we won't have a status.
             return;
           }
-         
-          // if (result.status >= 400 && errors.isHttpErrorRecoverable(result.status) && canRetry) {
-          //   return doPostRequest(false);
-          // } else {
-            //return getResponseInfo(result);
-            return result;
-          // }
+
+          return result;
         })
         .catch(() => {
-          // if (canRetry) {
-          //   return doPostRequest(false);
-          // }
           return Promise.reject();
         });
     }
