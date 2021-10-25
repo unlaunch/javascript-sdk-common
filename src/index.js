@@ -320,6 +320,13 @@ export function initialize(clientSdkKey, flagKeys, user, specifiedOptions, platf
           console.warn("[UL] Disabling local storage in production is not recommended. Please enable it. For more information see: https://docs.unlaunch.io/docs/sdks/javascript-library#client-configuration")
       }
 
+      const isPublicSdkKey = clientSdkKey.split('-')[1] == 'public' ? true : false
+      if(!isPublicSdkKey){
+        console.warn("To obtain the API key, please sign in to the Unlaunch Console at https://app.unlaunch.io" 
+                      +". Then on the right sidebar, click on 'Settings'. Then from the 'Projects' tab. Copy the 'PUBLIC KEY' for the " 
+                      +"environment you want to connect to, and provide it to this SDK. For more information, visit: https://docs.unlaunch.io/docs/sdks/sdk-keys")
+      }
+
       ident.setUser(realUser);
       if (useLocalStorage) {
         console.log("finishInitWithLocalStorage");

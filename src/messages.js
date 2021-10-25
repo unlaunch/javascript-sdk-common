@@ -14,7 +14,7 @@ export const clientInitialized = function() {
   return 'Unlaunch client initialized';
 };
 
-const invalidSdkKeyHelpMsg = `To obtain the SDK key for your project, please sign in to the Unlaunch Console at https://app.unlaunch.io  Then on the right sidebar, click on 'Settings'. From the 'Projects' tab, Copy the 'Browser / Public Key' for the environment you want to connect with, and provide it to this SDK. For more information, see this: https://docs.unlaunch.io/docs/sdks/sdk-keys`;
+const invalidSdkKeyHelpMsg = "To obtain the API key, please sign in to the Unlaunch Console at https://app.unlaunch.io. Then on the right sidebar, click on 'Settings'. Then from the 'Projects' tab. Copy the 'PUBLIC KEY' for the environment you want to connect to, and provide it to this SDK. For more information, visit: https://docs.unlaunch.io/docs/sdks/sdk-keys"
 
 const docLink = "Read more at https://docs.unlaunch.io/docs/sdks/javascript-library"
 
